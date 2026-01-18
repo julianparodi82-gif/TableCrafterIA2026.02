@@ -59,10 +59,20 @@
       }
 
       .header {
-        background: var(--tc-blanco);
+        background: linear-gradient(135deg, rgba(122, 223, 138, 0.18), #ffffff 60%);
         border-radius: var(--tc-radio);
-        padding: 16px;
+        padding: 18px;
         box-shadow: var(--tc-sombra);
+        border: 1px solid rgba(122, 223, 138, 0.35);
+        display: grid;
+        gap: 12px;
+      }
+
+      .header__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
       }
 
       .header__title {
@@ -71,9 +81,9 @@
       }
 
       .header__subtitle {
-        margin-top: 6px;
         color: var(--tc-texto-secundario);
         font-size: 13px;
+        line-height: 1.5;
       }
 
       .content {
@@ -90,27 +100,41 @@
       .nav {
         background: var(--tc-blanco);
         border-radius: var(--tc-radio);
-        padding: 12px;
+        padding: 14px;
         box-shadow: var(--tc-sombra);
         display: grid;
-        gap: 8px;
+        gap: 12px;
+      }
+
+      .nav__row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .nav__row--bottom {
+        justify-content: center;
       }
 
       .nav__button {
+        width: clamp(78px, 26vw, 120px);
+        aspect-ratio: 1 / 1;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 10px 12px;
-        border-radius: 10px;
+        justify-content: center;
+        text-align: center;
+        padding: 8px;
+        border-radius: 12px;
         color: var(--tc-texto);
-        background: transparent;
+        background: #f7fbf8;
         transition: var(--tc-transicion);
-        border: 1px solid transparent;
+        border: 1px solid var(--tc-borde);
+        font-size: 12px;
+        font-weight: 600;
       }
 
       .nav__button:hover {
-        background: rgba(122, 223, 138, 0.12);
-        border-color: rgba(122, 223, 138, 0.4);
+        background: rgba(122, 223, 138, 0.22);
+        border-color: rgba(122, 223, 138, 0.6);
       }
 
       .nav__button:focus-visible {
@@ -121,7 +145,8 @@
       .nav__button--active {
         background: var(--tc-verde-claro);
         color: #0f2a1a;
-        font-weight: 600;
+        font-weight: 700;
+        box-shadow: 0 8px 16px rgba(122, 223, 138, 0.35);
       }
 
       /* =========================================================
@@ -132,6 +157,7 @@
         border-radius: var(--tc-radio);
         padding: 16px;
         box-shadow: var(--tc-sombra);
+        border: 1px solid rgba(215, 229, 223, 0.8);
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -211,6 +237,11 @@
         font-weight: 600;
       }
 
+      .badge--compact {
+        padding: 3px 8px;
+        font-size: 11px;
+      }
+
       .placeholder {
         border: 1px dashed var(--tc-borde);
         border-radius: 12px;
@@ -239,7 +270,10 @@
        * ZONA 7: ENCABEZADO
        * ======================================================= -->
       <header class="header">
-        <div class="header__title">TableCrafter IA</div>
+        <div class="header__top">
+          <div class="header__title">TableCrafter IA</div>
+          <span class="badge badge--compact">Fase 1</span>
+        </div>
         <div class="header__subtitle">
           Complemento visual en fase 1. Todo es interfaz y sin lógica real.
         </div>
@@ -250,13 +284,17 @@
          * ZONA 8: NAVEGACIÓN INTERNA
          * ======================================================= -->
         <nav class="nav" aria-label="Navegación interna">
-          <button class="nav__button nav__button--active" data-view="panel-ia">
-            Panel IA
-          </button>
-          <button class="nav__button" data-view="editar-tabla">Editar Tabla</button>
-          <button class="nav__button" data-view="crear-tabla">Crear Tabla</button>
-          <button class="nav__button" data-view="triggers">Triggers</button>
-          <button class="nav__button" data-view="acciones">Acciones</button>
+          <div class="nav__row">
+            <button class="nav__button nav__button--active" data-view="panel-ia">
+              Panel IA
+            </button>
+            <button class="nav__button" data-view="editar-tabla">Editar Tabla</button>
+            <button class="nav__button" data-view="crear-tabla">Crear Tabla</button>
+          </div>
+          <div class="nav__row nav__row--bottom">
+            <button class="nav__button" data-view="triggers">Triggers</button>
+            <button class="nav__button" data-view="acciones">Acciones</button>
+          </div>
         </nav>
 
         <!-- =======================================================
