@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TableCrafter IA</title>
+    <style>
+      /* =========================================================
+       * ZONA 1: TOKENS DE IDENTIDAD VISUAL
+       * ========================================================= */
+      :root {
+        --tc-verde-claro: #7adf8a;
+        --tc-verde-claro-hover: #6ed67f;
+        --tc-verde-claro-focus: #5fcd72;
+        --tc-fondo: #f6f9f7;
+        --tc-blanco: #ffffff;
+        --tc-texto: #1f2a27;
+        --tc-texto-secundario: #5a6b66;
+        --tc-borde: #d7e5df;
+        --tc-sombra: 0 10px 25px rgba(31, 42, 39, 0.08);
+        --tc-radio: 12px;
+        --tc-transicion: 0.2s ease;
+      }
+
+      /* =========================================================
+       * ZONA 2: RESET Y BASE
+       * ========================================================= */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--tc-fondo);
+        color: var(--tc-texto);
+        height: 100vh;
+      }
+
+      button {
+        font-family: inherit;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      /* =========================================================
+       * ZONA 3: LAYOUT GENERAL
+       * ========================================================= */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .header {
+        background: var(--tc-blanco);
+        border-radius: var(--tc-radio);
+        padding: 16px;
+        box-shadow: var(--tc-sombra);
+      }
+
+      .header__title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .header__subtitle {
+        margin-top: 6px;
+        color: var(--tc-texto-secundario);
+        font-size: 13px;
+      }
+
+      .content {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        overflow: auto;
+      }
+
+      /* =========================================================
+       * ZONA 4: NAVEGACIÓN INTERNA
+       * ========================================================= */
+      .nav {
+        background: var(--tc-blanco);
+        border-radius: var(--tc-radio);
+        padding: 12px;
+        box-shadow: var(--tc-sombra);
+        display: grid;
+        gap: 8px;
+      }
+
+      .nav__button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-radius: 10px;
+        color: var(--tc-texto);
+        background: transparent;
+        transition: var(--tc-transicion);
+        border: 1px solid transparent;
+      }
+
+      .nav__button:hover {
+        background: rgba(122, 223, 138, 0.12);
+        border-color: rgba(122, 223, 138, 0.4);
+      }
+
+      .nav__button:focus-visible {
+        outline: 2px solid var(--tc-verde-claro-focus);
+        outline-offset: 2px;
+      }
+
+      .nav__button--active {
+        background: var(--tc-verde-claro);
+        color: #0f2a1a;
+        font-weight: 600;
+      }
+
+      /* =========================================================
+       * ZONA 5: TARJETAS Y CONTENIDO
+       * ========================================================= */
+      .card {
+        background: var(--tc-blanco);
+        border-radius: var(--tc-radio);
+        padding: 16px;
+        box-shadow: var(--tc-sombra);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .card__title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .card__desc {
+        font-size: 13px;
+        color: var(--tc-texto-secundario);
+      }
+
+      .form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .input-group {
+        display: grid;
+        gap: 6px;
+      }
+
+      label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tc-texto-secundario);
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--tc-borde);
+        background: #fdfefd;
+        font-size: 13px;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 2px solid var(--tc-verde-claro-focus);
+        border-color: transparent;
+      }
+
+      .button-primary {
+        background: var(--tc-verde-claro);
+        color: #0f2a1a;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: var(--tc-transicion);
+      }
+
+      .button-primary:hover {
+        background: var(--tc-verde-claro-hover);
+      }
+
+      .button-primary:focus-visible {
+        outline: 2px solid var(--tc-verde-claro-focus);
+        outline-offset: 2px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(122, 223, 138, 0.18);
+        color: #0f2a1a;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .placeholder {
+        border: 1px dashed var(--tc-borde);
+        border-radius: 12px;
+        padding: 14px;
+        background: #fbfdfc;
+        color: var(--tc-texto-secundario);
+        font-size: 13px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* =========================================================
+       * ZONA 6: ESTADOS DESHABILITADOS
+       * ========================================================= */
+      .disabled {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sidebar">
+      <!-- =======================================================
+       * ZONA 7: ENCABEZADO
+       * ======================================================= -->
+      <header class="header">
+        <div class="header__title">TableCrafter IA</div>
+        <div class="header__subtitle">
+          Complemento visual en fase 1. Todo es interfaz y sin lógica real.
+        </div>
+      </header>
+
+      <section class="content">
+        <!-- =======================================================
+         * ZONA 8: NAVEGACIÓN INTERNA
+         * ======================================================= -->
+        <nav class="nav" aria-label="Navegación interna">
+          <button class="nav__button nav__button--active" data-view="panel-ia">
+            Panel IA
+          </button>
+          <button class="nav__button" data-view="editar-tabla">Editar Tabla</button>
+          <button class="nav__button" data-view="crear-tabla">Crear Tabla</button>
+          <button class="nav__button" data-view="triggers">Triggers</button>
+          <button class="nav__button" data-view="acciones">Acciones</button>
+        </nav>
+
+        <!-- =======================================================
+         * ZONA 9: VISTAS / SECCIONES
+         * ======================================================= -->
+        <section class="card" data-section="panel-ia">
+          <div>
+            <div class="card__title">Panel IA</div>
+            <p class="card__desc">
+              Aquí se centralizarán los controles de IA para trabajar con tablas.
+            </p>
+          </div>
+          <div class="badge">Próximamente</div>
+          <div class="form disabled">
+            <div class="input-group">
+              <label for="ia-objetivo">Objetivo de la IA</label>
+              <input id="ia-objetivo" type="text" placeholder="Describe la tarea" />
+            </div>
+            <button class="button-primary" type="button">Ejecutar IA</button>
+          </div>
+          <div class="placeholder">
+            Próximamente se mostrará un resumen de instrucciones y resultados.
+          </div>
+        </section>
+
+        <section class="card hidden" data-section="editar-tabla">
+          <div>
+            <div class="card__title">Editar Tabla</div>
+            <p class="card__desc">
+              Ajusta columnas, formatos y reglas sobre la tabla seleccionada.
+            </p>
+          </div>
+          <div class="badge">Próximamente</div>
+          <div class="form disabled">
+            <div class="input-group">
+              <label for="editar-rango">Rango objetivo</label>
+              <input id="editar-rango" type="text" placeholder="Ej: A1:F20" />
+            </div>
+            <div class="input-group">
+              <label for="editar-formato">Formato rápido</label>
+              <select id="editar-formato">
+                <option>Negritas y bordes</option>
+                <option>Colores corporativos</option>
+              </select>
+            </div>
+            <button class="button-primary" type="button">Aplicar cambios</button>
+          </div>
+          <div class="placeholder">
+            Próximamente podrás editar estilos y validaciones sin esfuerzo.
+          </div>
+        </section>
+
+        <section class="card hidden" data-section="crear-tabla">
+          <div>
+            <div class="card__title">Crear Tabla</div>
+            <p class="card__desc">
+              Genera una tabla con estructura sugerida para tu proyecto.
+            </p>
+          </div>
+          <div class="badge">Próximamente</div>
+          <div class="form disabled">
+            <div class="input-group">
+              <label for="crear-nombre">Nombre de tabla</label>
+              <input id="crear-nombre" type="text" placeholder="Nueva tabla" />
+            </div>
+            <div class="input-group">
+              <label for="crear-columnas">Número de columnas</label>
+              <input id="crear-columnas" type="number" placeholder="6" />
+            </div>
+            <button class="button-primary" type="button">Crear tabla</button>
+          </div>
+          <div class="placeholder">
+            Próximamente podrás generar tablas con plantillas inteligentes.
+          </div>
+        </section>
+
+        <section class="card hidden" data-section="triggers">
+          <div>
+            <div class="card__title">Triggers</div>
+            <p class="card__desc">
+              Define automatizaciones sobre eventos de edición o programación.
+            </p>
+          </div>
+          <div class="badge">Próximamente</div>
+          <div class="form disabled">
+            <div class="input-group">
+              <label for="trigger-evento">Evento</label>
+              <select id="trigger-evento">
+                <option>Al editar</option>
+                <option>Programado</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="trigger-accion">Acción</label>
+              <input id="trigger-accion" type="text" placeholder="Actualizar resumen" />
+            </div>
+            <button class="button-primary" type="button">Guardar trigger</button>
+          </div>
+          <div class="placeholder">
+            Próximamente podrás activar disparadores sin código.
+          </div>
+        </section>
+
+        <section class="card hidden" data-section="acciones">
+          <div>
+            <div class="card__title">Acciones</div>
+            <p class="card__desc">
+              Ejecuta acciones rápidas sobre tu hoja de cálculo.
+            </p>
+          </div>
+          <div class="badge">Próximamente</div>
+          <div class="form disabled">
+            <div class="input-group">
+              <label for="accion-tipo">Tipo de acción</label>
+              <select id="accion-tipo">
+                <option>Limpiar rangos</option>
+                <option>Generar resumen</option>
+              </select>
+            </div>
+            <button class="button-primary" type="button">Ejecutar acción</button>
+          </div>
+          <div class="placeholder">
+            Próximamente verás acciones en lote desde este panel.
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      // =========================================================
+      // ZONA 10: UTILIDADES
+      // =========================================================
+      var botonesNav = document.querySelectorAll('.nav__button');
+      var secciones = document.querySelectorAll('[data-section]');
+
+      /**
+       * Cambia la vista activa y actualiza los estilos del menú.
+       * @param {string} vistaId - Identificador de la vista seleccionada.
+       */
+      function activarVista(vistaId) {
+        secciones.forEach(function (section) {
+          var esVisible = section.getAttribute('data-section') === vistaId;
+          section.classList.toggle('hidden', !esVisible);
+        });
+
+        botonesNav.forEach(function (button) {
+          var esActivo = button.getAttribute('data-view') === vistaId;
+          button.classList.toggle('nav__button--active', esActivo);
+        });
+      }
+
+      // =========================================================
+      // ZONA 11: EVENTOS
+      // =========================================================
+      botonesNav.forEach(function (button) {
+        button.addEventListener('click', function () {
+          activarVista(button.getAttribute('data-view'));
+        });
+      });
+    </script>
+  </body>
+</html>
