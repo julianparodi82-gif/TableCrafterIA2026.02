@@ -116,7 +116,7 @@
       }
 
       .nav__button {
-        width: clamp(78px, 26vw, 120px);
+        width: clamp(70px, 24vw, 104px);
         aspect-ratio: 1 / 1;
         display: flex;
         align-items: center;
@@ -146,7 +146,6 @@
         background: var(--tc-verde-claro);
         color: #0f2a1a;
         font-weight: 700;
-        box-shadow: 0 8px 16px rgba(122, 223, 138, 0.35);
       }
 
       /* =========================================================
@@ -249,6 +248,44 @@
         background: #fbfdfc;
         color: var(--tc-texto-secundario);
         font-size: 13px;
+      }
+
+      .table-preview {
+        display: grid;
+        gap: 8px;
+      }
+
+      .table-preview__grid {
+        border: 1px solid var(--tc-borde);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      .table-preview__row {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+      }
+
+      .table-preview__cell {
+        padding: 8px 10px;
+        border-right: 1px solid var(--tc-borde);
+        border-bottom: 1px solid var(--tc-borde);
+        font-size: 12px;
+      }
+
+      .table-preview__cell--head {
+        background: rgba(122, 223, 138, 0.2);
+        font-weight: 600;
+      }
+
+      .table-preview__row:last-child .table-preview__cell {
+        border-bottom: none;
+      }
+
+      .table-preview__cell:last-child {
+        border-right: none;
       }
 
       .hidden {
@@ -354,8 +391,8 @@
               Genera una tabla con estructura sugerida para tu proyecto.
             </p>
           </div>
-          <div class="badge">Próximamente</div>
-          <div class="form disabled">
+          <div class="badge">Demo activa</div>
+          <div class="form" id="crear-tabla-form">
             <div class="input-group">
               <label for="crear-nombre">Nombre de tabla</label>
               <input id="crear-nombre" type="text" placeholder="Nueva tabla" />
@@ -364,10 +401,30 @@
               <label for="crear-columnas">Número de columnas</label>
               <input id="crear-columnas" type="number" placeholder="6" />
             </div>
-            <button class="button-primary" type="button">Crear tabla</button>
+            <div class="input-group">
+              <label for="crear-cabeceras">Cabeceras (separadas por coma)</label>
+              <input
+                id="crear-cabeceras"
+                type="text"
+                placeholder="Ej: Producto, Cantidad, Precio"
+              />
+            </div>
+            <div class="input-group">
+              <label for="crear-filas">Filas de ejemplo</label>
+              <select id="crear-filas">
+                <option value="3">3 filas</option>
+                <option value="5" selected>5 filas</option>
+                <option value="8">8 filas</option>
+              </select>
+            </div>
+            <button class="button-primary" id="crear-tabla-btn" type="button">
+              Generar vista previa
+            </button>
           </div>
-          <div class="placeholder">
-            Próximamente podrás generar tablas con plantillas inteligentes.
+          <div class="table-preview" id="crear-tabla-preview">
+            <div class="placeholder">
+              Completa los campos y genera una vista previa de la tabla.
+            </div>
           </div>
         </section>
 
@@ -429,6 +486,12 @@
       // =========================================================
       var botonesNav = document.querySelectorAll('.nav__button');
       var secciones = document.querySelectorAll('[data-section]');
+      var crearTablaBtn = document.getElementById('crear-tabla-btn');
+      var crearTablaPreview = document.getElementById('crear-tabla-preview');
+      var crearNombreInput = document.getElementById('crear-nombre');
+      var crearColumnasInput = document.getElementById('crear-columnas');
+      var crearCabecerasInput = document.getElementById('crear-cabeceras');
+      var crearFilasSelect = document.getElementById('crear-filas');
 
       /**
        * Cambia la vista activa y actualiza los estilos del menú.
@@ -446,6 +509,89 @@
         });
       }
 
+      /**
+       * Normaliza la lista de cabeceras para la vista previa.
+       * @param {string} textoCabeceras - Texto con cabeceras separadas por coma.
+       * @param {number} totalColumnas - Número total de columnas deseado.
+       * @returns {string[]} Cabeceras finales para la tabla.
+       */
+      function obtenerCabeceras(textoCabeceras, totalColumnas) {
+        var cabeceras = textoCabeceras
+          .split(',')
+          .map(function (valor) {
+            return valor.trim();
+          })
+          .filter(Boolean);
+
+        if (cabeceras.length === 0) {
+          cabeceras = [];
+          for (var i = 1; i <= totalColumnas; i += 1) {
+            cabeceras.push('Columna ' + i);
+          }
+        }
+
+        if (cabeceras.length < totalColumnas) {
+          for (var j = cabeceras.length + 1; j <= totalColumnas; j += 1) {
+            cabeceras.push('Columna ' + j);
+          }
+        }
+
+        return cabeceras.slice(0, totalColumnas);
+      }
+
+      /**
+       * Renderiza una vista previa estática de la tabla sin tocar la hoja real.
+       */
+      function renderizarVistaPrevia() {
+        var nombreTabla = crearNombreInput.value.trim() || 'Nueva tabla';
+        var totalColumnas = parseInt(crearColumnasInput.value, 10);
+        var totalFilas = parseInt(crearFilasSelect.value, 10);
+
+        if (!totalColumnas || totalColumnas < 1) {
+          totalColumnas = 3;
+        }
+
+        if (!totalFilas || totalFilas < 1) {
+          totalFilas = 3;
+        }
+
+        var cabeceras = obtenerCabeceras(crearCabecerasInput.value, totalColumnas);
+
+        crearTablaPreview.innerHTML = '';
+
+        var titulo = document.createElement('div');
+        titulo.className = 'card__title';
+        titulo.textContent = nombreTabla;
+
+        var grid = document.createElement('div');
+        grid.className = 'table-preview__grid';
+
+        var filaCabecera = document.createElement('div');
+        filaCabecera.className = 'table-preview__row';
+        cabeceras.forEach(function (cabecera) {
+          var celda = document.createElement('div');
+          celda.className = 'table-preview__cell table-preview__cell--head';
+          celda.textContent = cabecera;
+          filaCabecera.appendChild(celda);
+        });
+        grid.appendChild(filaCabecera);
+
+        for (var fila = 1; fila <= totalFilas; fila += 1) {
+          var filaDato = document.createElement('div');
+          filaDato.className = 'table-preview__row';
+          for (var col = 1; col <= totalColumnas; col += 1) {
+            var celdaDato = document.createElement('div');
+            celdaDato.className = 'table-preview__cell';
+            celdaDato.textContent = 'Fila ' + fila + ' · Col ' + col;
+            filaDato.appendChild(celdaDato);
+          }
+          grid.appendChild(filaDato);
+        }
+
+        crearTablaPreview.appendChild(titulo);
+        crearTablaPreview.appendChild(grid);
+      }
+
       // =========================================================
       // ZONA 11: EVENTOS
       // =========================================================
@@ -454,6 +600,12 @@
           activarVista(button.getAttribute('data-view'));
         });
       });
+
+      if (crearTablaBtn) {
+        crearTablaBtn.addEventListener('click', function () {
+          renderizarVistaPrevia();
+        });
+      }
     </script>
   </body>
 </html>
